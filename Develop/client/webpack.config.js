@@ -4,8 +4,8 @@ const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { InjectManifest } = require("workbox-webpack-plugin");
 
-// Add and configure workbox plugins for a service worker and manifest file.
-// Add CSS loaders and babel to webpack.
+// TODO: Add and configure workbox plugins for a service worker and manifest file.
+// TODO: Add CSS loaders and babel to webpack.
 
 module.exports = () => {
   return {
@@ -29,8 +29,13 @@ module.exports = () => {
         template: "./index.html",
         title: "names List",
       }),
-
+      //service worker
+      new InjectManifest({
+        swSrc: "./src-sw.js",
+        swDest: "src-sw.js",
+      }),
       new GenerateSW(),
+      //manifest file
       new WebpackPwaManifest({
         name: "Text Editor",
         short_name: "notes",
@@ -51,14 +56,16 @@ module.exports = () => {
 
     module: {
       rules: [
+        //css losder
         {
           test: /\.css$/i,
-          use: ['style-loader', 'css-loader'],
+          use: [MiniCssExtractPlugin.loader, 'css-loader'],
         },
         {
           test: /\.(png|svg|jpg|jpeg|gif)$/i,
           type: 'asset/resource',
         },
+        //babel loader
         {
           test: /\.m?js$/,
           exclude: /(node_modules|bower_components)/,
